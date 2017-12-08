@@ -1,0 +1,7 @@
+node_modules
+dist/*
+.happypack
+src/template.html.ejs
+/coverage/
+npm-debug.*
+*.log

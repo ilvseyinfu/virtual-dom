@@ -1,0 +1,50 @@
+body {
+  background : #ff6d6d;
+}
+
+.products {
+
+  padding: .3rem;
+
+  .product {
+    width         : 8.8rem;
+    background    : #fff;
+    float         : left;
+    padding       : .5rem;
+    margin-bottom : .5rem;
+
+    &:nth-of-type(2n) {
+      margin-left: .5rem;
+    }
+
+    figure {
+      margin: 0;
+
+      a {
+        display: block;
+      }
+
+      img.cover {
+        max-width: 100%;
+      }
+
+      .zhima-price {
+        color : #fa668b;
+      }
+
+      em {
+        font-size : 150%;
+        color     : #fa668b;
+      }
+
+      .market-price {
+        float     : right;
+        font-size : 60%;
+        del {
+          display: block;
+          font-size: 110%;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,95 @@
+image: qhwa/hlj-nodejs-ci-base:latest
+
+cache:
+  key: "$CI_PROJECT_ID-$CI_PROJECT_NAME-$CI_BUILD_REF_NAME-v2"
+  paths:
+    - node_modules/
+    - dist
+
+variables:
+  SASS_BINARY_SITE: "https://npm.taobao.org/mirrors/node-sass/"
+  PAGE_SLUG:          "m/stuff/virtualDom"
+
+before_script:
+
+stages:
+  - install
+  - test
+  - build
+  - deploy
+
+install:
+  stage: install
+  tags:
+    - nodejs
+  script:
+    - yarn config set registry https://r.cnpmjs.org
+    - yarn install --no-emoji --no-progress --network-concurrency 10
+
+lint:
+  tags:
+    - nodejs
+  stage: test
+  script:
+    - yarn lint
+
+test:
+  tags:
+    - nodejs
+  script:
+    - 'echo "FIXME: add tests"'
+
+build:
+  tags:
+    - nodejs
+  stage: build
+  only:
+    - stg
+    - /^stg-\d+$/
+    - release
+    - master
+  script:
+    - yarn run build
+
+# 发布到测试环境
+deploy_to_test_env:
+  stage: deploy
+  tags:
+    - nodejs
+  only:
+    - stg
+    - /^stg-\d+$/
+  script:
+    - yarn run upload
+    - yarn run rollout $CI_BUILD_REF_NAME
+  environment:
+    name: $CI_BUILD_REF_NAME
+    url: https://stg-page.helijia.com/$PAGE_SLUG/index.html
+
+# 发布到预发环境
+deploy_to_pre_env:
+  stage: deploy
+  tags:
+    - nodejs
+  only:
+    - release
+  script:
+     - yarn run upload
+     - yarn run rollout pre
+  environment:
+    name: pre
+
+
+# 发布到正式环境
+deploy_to_prod_env:
+  tags:
+    - nodejs
+  stage: deploy
+  only:
+    - master
+  script:
+    - yarn run upload
+    - yarn run rollout prod
+  environment:
+    name: production
+    url: https://page.helijia.com/$PAGE_SLUG/index.html
